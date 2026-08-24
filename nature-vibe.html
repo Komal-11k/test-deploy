@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Into the Wild — Nature Vibes</title>
+<style>
+  :root{
+    --moss: #3f5c46;
+    --sage: #8aa88f;
+    --cream: #f4efe4;
+    --bark: #4a3c2f;
+    --sun: #d8b878;
+    --line: rgba(74,60,47,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body{
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--cream);
+    color: var(--bark);
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--sage); color: var(--cream); }
+
+  /* Floating leaves canvas-ish decoration */
+  .leaf {
+    position: fixed;
+    top: -40px;
+    font-size: 22px;
+    opacity: 0.35;
+    pointer-events: none;
+    animation: fall linear infinite;
+    z-index: 0;
+    color: var(--moss);
+  }
+
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); }
+  }
+
+  header{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    padding: 20px;
+  }
+
+  header::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 30%, rgba(138,168,143,0.25), transparent 60%);
+    z-index: 0;
+  }
+
+  .eyebrow{
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--moss);
+    margin-bottom: 18px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    z-index: 1;
+  }
+
+  h1{
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: var(--bark);
+    z-index: 1;
+  }
+
+  h1 em{
+    font-style: italic;
+    color: var(--moss);
+  }
+
+  .sub{
+    margin-top: 22px;
+    font-size: 1.05rem;
+    color: #6b5c4a;
+    max-width: 480px;
+    line-height: 1.7;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 300;
+    z-index: 1;
+  }
+
+  .scroll-hint{
+    margin-top: 60px;
+    width: 1px;
+    height: 60px;
+    background: var(--line);
+    position: relative;
+    z-index: 1;
+  }
+
+  .scroll-hint::after{
+    content:"";
+    position: absolute;
+    top: 0; left: -3px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--moss);
+    animation: dropdown 2.2s ease-in-out infinite;
+  }
+
+  @keyframes dropdown{
+    0% { top: 0; opacity: 1; }
+    80% { opacity: 1; }
+    100% { top: 90%; opacity: 0; }
+  }
+
+  section{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 120px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .divider{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 60px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+  }
+
+  .divider.visible{ opacity: 1; transform: translateY(0); }
+
+  .divider::before, .divider::after{
+    content:"";
+    flex:1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .divider span{
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 11px;
+    color: var(--moss);
+  }
+
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+  }
+
+  .card{
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.9s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .card.visible{ opacity: 1; transform: translateY(0); }
+
+  .card .num{
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    color: var(--sage);
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+
+  .card h3{
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 12px;
+    color: var(--bark);
+  }
+
+  .card p{
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #6b5c4a;
+  }
+
+  .quote{
+    text-align: center;
+    font-style: italic;
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    line-height: 1.6;
+    color: var(--moss);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease;
+  }
+
+  .quote.visible{ opacity: 1; transform: translateY(0); }
+
+  .quote span{
+    display: block;
+    margin-top: 20px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-style: normal;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+
+  footer{
+    text-align: center;
+    padding: 60px 24px 40px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a09480;
+  }
+
+  .btn{
+    z-index:1;
+    margin-top: 36px;
+    padding: 14px 36px;
+    background: transparent;
+    border: 1px solid var(--moss);
+    color: var(--moss);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border-radius: 30px;
+  }
+
+  .btn:hover{
+    background: var(--moss);
+    color: var(--cream);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Slow down & breathe</div>
+  <h1>Find your <em>calm</em><br>in the wild</h1>
+  <p class="sub">A quiet corner of the internet, inspired by moss, mist, and morning light through the trees.</p>
+  <button class="btn" onclick="document.getElementById('philosophy').scrollIntoView()">Wander in</button>
+  <div class="scroll-hint"></div>
+</header>
+
+<section id="philosophy">
+  <div class="divider"><span>Our Philosophy</span></div>
+  <div class="grid">
+    <div class="card">
+      <div class="num">01</div>
+      <h3>Rooted</h3>
+      <p>Like an old oak, we believe in grounding yourself before you grow. Slowness is not weakness — it's wisdom.</p>
+    </div>
+    <div class="card">
+      <div class="num">02</div>
+      <h3>Wild</h3>
+      <p>Nature doesn't rush, yet everything gets done. Let go of the hurry and trust the season you're in.</p>
+    </div>
+    <div class="card">
+      <div class="num">03</div>
+      <h3>Quiet</h3>
+      <p>In stillness, the forest speaks loudest. Make room for silence — it's where clarity lives.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="divider"><span>A Thought</span></div>
+  <p class="quote">"The mountains are calling,<br>and I must go."<span>— John Muir</span></p>
+</section>
+
+<footer>
+  🌿 Made with care, somewhere near the hills
+</footer>
+
+<script>
+  // floating leaves
+  const leafSymbols = ["🍃","🌿","🍂"];
+  const leafCount = 12;
+  for(let i=0;i<leafCount;i++){
+    const leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    leaf.textContent = leafSymbols[Math.floor(Math.random()*leafSymbols.length)];
+    leaf.style.left = Math.random()*100 + 'vw';
+    leaf.style.animationDuration = (10 + Math.random()*10) + 's';
+    leaf.style.animationDelay = (Math.random()*10) + 's';
+    leaf.style.fontSize = (16 + Math.random()*14) + 'px';
+    document.body.appendChild(leaf);
+  }
+
+  // scroll reveal
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.divider, .card, .quote').forEach(el=>{
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
