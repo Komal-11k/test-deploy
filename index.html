@@ -1,349 +1,541 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="pageTitle">Hackathon Template</title>
-<style>
-  :root{
-    --primary: #2f6f4f;
-    --primary-dark: #1f4d36;
-    --accent: #d8b878;
-    --bg: #0e1512;
-    --bg-soft: #141d19;
-    --text: #eef1ee;
-    --text-dim: #a9b3ac;
-    --card: #182420;
-    --line: rgba(255,255,255,0.08);
-    --radius: 14px;
-  }
-
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
-  body{
-    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-  }
-  a { color: inherit; text-decoration: none; }
-  section { padding: 100px 24px; max-width: 1100px; margin: 0 auto; }
-  h1,h2,h3 { font-weight: 700; letter-spacing: -0.02em; }
-
-  nav{
-    position: fixed; top:0; left:0; right:0; z-index: 100;
-    display:flex; align-items:center; justify-content:space-between;
-    padding: 18px 32px;
-    background: rgba(14,21,18,0.75);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-  }
-  nav .brand{ font-weight:800; font-size:1.1rem; display:flex; align-items:center; gap:8px; }
-  nav .brand span.dot{ width:8px; height:8px; border-radius:50%; background: var(--accent); display:inline-block; }
-  nav ul{ list-style:none; display:flex; gap:32px; font-size:0.9rem; color: var(--text-dim); }
-  nav ul a:hover{ color: var(--text); }
-  nav .cta{
-    background: var(--primary); color:#fff; padding:9px 20px; border-radius:30px; font-size:0.85rem; font-weight:600;
-  }
-  @media (max-width: 720px){ nav ul{ display:none; } }
-
-  header.hero{
-    min-height: 100vh;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; padding: 140px 24px 100px;
-    position: relative;
-    overflow:hidden;
-  }
-  header.hero::before{
-    content:"";
-    position:absolute; inset:0;
-    background: radial-gradient(circle at 50% 20%, rgba(47,111,79,0.35), transparent 60%);
-    z-index:0;
-  }
-  .badge{
-    z-index:1;
-    display:inline-block;
-    padding: 6px 16px;
-    border: 1px solid var(--line);
-    border-radius: 30px;
-    font-size: 0.78rem;
-    color: var(--accent);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-  header.hero h1{
-    z-index:1;
-    font-size: clamp(2.2rem, 6vw, 4rem);
-    max-width: 780px;
-  }
-  header.hero h1 .accent{ color: var(--accent); }
-  header.hero p{
-    z-index:1;
-    margin-top: 22px;
-    max-width: 560px;
-    color: var(--text-dim);
-    font-size: 1.05rem;
-  }
-  .hero-actions{ z-index:1; margin-top: 36px; display:flex; gap: 16px; flex-wrap:wrap; justify-content:center; }
-  .btn{
-    padding: 13px 28px; border-radius: 30px; font-weight:600; font-size:0.9rem; cursor:pointer; border:none;
-    transition: all 0.25s ease;
-  }
-  .btn-primary{ background: var(--primary); color:#fff; }
-  .btn-primary:hover{ background: var(--primary-dark); transform: translateY(-2px); }
-  .btn-ghost{ background: transparent; border:1px solid var(--line); color: var(--text); }
-  .btn-ghost:hover{ border-color: var(--accent); color: var(--accent); }
-
-  .stats{ z-index:1; margin-top: 60px; display:flex; gap: 48px; flex-wrap:wrap; justify-content:center; }
-  .stat h3{ font-size:1.8rem; color: var(--accent); }
-  .stat p{ font-size:0.8rem; color: var(--text-dim); text-transform:uppercase; letter-spacing:1px; }
-
-  .section-tag{
-    font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); margin-bottom: 12px;
-  }
-  .section-title{ font-size: clamp(1.6rem, 4vw, 2.4rem); max-width: 640px; margin-bottom: 16px; }
-  .section-desc{ color: var(--text-dim); max-width: 600px; margin-bottom: 56px; }
-
-  .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-  @media (max-width: 760px){ .two-col{ grid-template-columns: 1fr; } }
-  .panel{
-    background: var(--card); border:1px solid var(--line); border-radius: var(--radius); padding: 32px;
-  }
-  .panel h3{ font-size:1.2rem; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
-  .panel h3 .icon{ font-size:1.4rem; }
-  .panel p{ color: var(--text-dim); font-size:0.95rem; }
-  .panel.problem h3{ color: #e08585; }
-  .panel.solution h3{ color: #7fd0a0; }
-
-  .feature-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
-  .feature-card{
-    background: var(--card); border:1px solid var(--line); border-radius: var(--radius); padding: 28px;
-    transition: all 0.3s ease;
-  }
-  .feature-card:hover{ border-color: var(--primary); transform: translateY(-4px); }
-  .feature-card .icon{
-    width:44px; height:44px; border-radius:12px; background: rgba(47,111,79,0.2);
-    display:flex; align-items:center; justify-content:center; font-size:1.3rem; margin-bottom: 18px;
-  }
-  .feature-card h4{ font-size:1.05rem; margin-bottom: 8px; }
-  .feature-card p{ font-size:0.88rem; color: var(--text-dim); }
-
-  .stack-row{ display:flex; flex-wrap:wrap; gap: 12px; }
-  .stack-pill{
-    background: var(--bg-soft); border:1px solid var(--line); padding: 10px 18px; border-radius: 30px; font-size:0.85rem;
-    color: var(--text-dim); display:flex; align-items:center; gap:8px;
-  }
-  .stack-pill:hover{ color: var(--text); border-color: var(--accent); }
-
-  .flow{ display:flex; flex-wrap:wrap; align-items:center; gap: 8px; }
-  .flow-step{
-    background: var(--card); border:1px solid var(--line); border-radius: 10px; padding: 16px 20px;
-    font-size: 0.88rem; flex: 1; min-width: 160px; text-align:center;
-  }
-  .flow-arrow{ color: var(--accent); font-size:1.2rem; }
-  @media (max-width: 720px){ .flow{ flex-direction:column; } .flow-arrow{ transform: rotate(90deg); } }
-
-  .team-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px; }
-  .team-card{ text-align:center; }
-  .team-avatar{
-    width: 84px; height: 84px; border-radius:50%; margin: 0 auto 14px;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    display:flex; align-items:center; justify-content:center; font-size:1.6rem; font-weight:700; color:#fff;
-  }
-  .team-card h4{ font-size:0.95rem; }
-  .team-card p{ font-size:0.8rem; color: var(--text-dim); }
-
-  .cta-section{
-    text-align:center; background: linear-gradient(180deg, var(--bg-soft), var(--bg));
-    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-  }
-  .cta-section h2{ font-size: clamp(1.6rem, 4vw, 2.6rem); margin-bottom: 16px; }
-  .cta-section p{ color: var(--text-dim); max-width: 500px; margin: 0 auto 32px; }
-
-  footer{
-    text-align:center; padding: 40px 24px; color: var(--text-dim); font-size: 0.82rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .reveal{ opacity:0; transform: translateY(24px); transition: all 0.7s cubic-bezier(.2,.8,.2,1); }
-  .reveal.visible{ opacity:1; transform: translateY(0); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webathon Project</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 80px 0;
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+    </style>
 </head>
 <body>
 
-<nav>
-  <div class="brand"><span class="dot"></span><span id="navBrand">ProjectName</span></div>
-  <ul>
-    <li><a href="#problem">Problem</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#architecture">How it works</a></li>
-    <li><a href="#stack">Tech</a></li>
-    <li><a href="#team">Team</a></li>
-  </ul>
-  <a class="cta" href="#demo">Live Demo</a>
-</nav>
+    <!-- 1. NAVIGATION BAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4" href="#"><i class="fa-solid fa-rocket me-2"></i>ProjectName</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto fw-semibold">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+                <a href="#contact" class="btn btn-outline-light ms-lg-3 rounded-pill px-4">Get Started</a>
+            </div>
+        </div>
+    </nav>
 
-<header class="hero">
-  <div class="badge" id="heroBadge">🏆 Built for Hackathon 2026</div>
-  <h1 id="heroTitle">Your Project <span class="accent">Tagline</span> Here</h1>
-  <p id="heroDesc">One or two lines describing what the project does and who it's for.</p>
-  <div class="hero-actions">
-    <button class="btn btn-primary" onclick="document.getElementById('demo').scrollIntoView()">See Live Demo</button>
-    <a class="btn btn-ghost" href="#" id="githubLink">View on GitHub</a>
-  </div>
-  <div class="stats" id="statsRow"></div>
-</header>
+    <!-- 2. HERO SECTION -->
+    <section id="home" class="hero-section text-center text-lg-start">
+        <div class="container">
+            <div class="row align-items-center gy-4">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-3">Smart Solution for Modern Problems</h1>
+                    <p class="lead mb-4 text-white-50">An innovative web platform designed to streamline processes, boost efficiency, and solve real-world challenges seamlessly.</p>
+                    <div class="d-sm-flex gap-3 justify-content-center justify-content-lg-start">
+                        <a href="#features" class="btn btn-light btn-lg text-primary fw-bold px-4 mb-2 mb-sm-0">Explore Features</a>
+                        <a href="#contact" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80" alt="Hero Illustration" class="img-fluid rounded-4 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
 
-<section id="problem">
-  <div class="section-tag">The Challenge</div>
-  <h2 class="section-title reveal">Problem &amp; Our Solution</h2>
-  <div class="two-col">
-    <div class="panel problem reveal">
-      <h3><span class="icon">⚠️</span> The Problem</h3>
-      <p id="problemText">Describe the real-world problem statement here.</p>
+    <!-- 3. STATS / HIGHLIGHTS SECTION -->
+    <section class="bg-light py-4 shadow-sm">
+        <div class="container text-center">
+            <div class="row gy-3">
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-primary mb-0">100%</h3>
+                    <small class="text-muted">Reliable</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-primary mb-0">24/7</h3>
+                    <small class="text-muted">Accessibility</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-primary mb-0">Fast</h3>
+                    <small class="text-muted">Performance</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-primary mb-0">Easy</h3>
+                    <small class="text-muted">User Interface</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. KEY FEATURES SECTION -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Key Features</h2>
+                <p class="text-muted">Why our solution stands out from the rest</p>
+            </div>
+            <div class="row g-4">
+                <!-- Feature 1 -->
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 shadow-sm feature-card text-center">
+                        <div class="fs-1 text-primary mb-3"><i class="fa-solid fa-bolt"></i></div>
+                        <h4 class="fw-bold mb-2">High Speed</h4>
+                        <p class="text-muted">Optimized architecture ensuring instant load times and seamless navigation for users.</p>
+                    </div>
+                </div>
+                <!-- Feature 2 -->
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 shadow-sm feature-card text-center">
+                        <div class="fs-1 text-primary mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h4 class="fw-bold mb-2">Secure & Reliable</h4>
+                        <p class="text-muted">Built with privacy and data protection principles at the core of the system.</p>
+                    </div>
+                </div>
+                <!-- Feature 3 -->
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 shadow-sm feature-card text-center">
+                        <div class="fs-1 text-primary mb-3"><i class="fa-solid fa-users"></i></div>
+                        <h4 class="fw-bold mb-2">User Centric</h4>
+                        <p class="text-muted">Designed intuitively so anyone can use it without prior technical guidance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. ABOUT / OVERVIEW SECTION -->
+    <section id="about" class="bg-light py-5">
+        <div class="container">
+            <div class="row align-items-center gy-4">
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80" alt="About Us" class="img-fluid rounded-4 shadow">
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="fw-bold mb-3">About The Project</h2>
+                    <p class="text-muted mb-3">This system was created to bridge the gap between complex requirements and everyday usability. By leveraging modern web standards, we provide a clean, accessible interface.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Fully Responsive Design</li>
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Lightweight & Fast Operations</li>
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Modular Structure</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. CONTACT FORM -->
+    <section id="contact" class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card shadow border-0 p-4">
+                        <h3 class="fw-bold text-center mb-4">Get In Touch</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label font-semibold">Name</label>
+                                <input type="text" class="form-control" placeholder="Your Name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label font-semibold">Email</label>
+                                <input type="email" class="form-control" placeholder="name@example.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label font-semibold">Message</label>
+                                <textarea class="form-control" rows="3" placeholder="Write your message..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 fw-bold">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. FOOTER -->
+    <footer class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 Webathon Project. Built with Bootstrap 5.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+Title & Logos: Top par ProjectName aur Navbar text replace kar do.
+
+Headings & Paragraphs: Hero section and Features ki Text bas problem statement ke anusar edit kar do (e.g., Environment website hai toh "Eco-Friendly Platform" heading bana do).
+
+Icons Change: FontAwesome icons ke class names badal do (jaise fa-rocket ko fa-tree ya fa-cart-shopping kar do).
+
+Images: Unsplash.com se topic ke related image links URL me paste kar do.
+
+
+
+Template 1: E-Commerce / Marketplace & Showcase Layout
+Best For: Product selling, service listing, portal apps, resource directory.
+
+Key Features: Search bar header, filter buttons, item grids, pricing table
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showcase & Marketplace Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#"><i class="fa-solid fa-store me-2"></i>MarketHub</a>
+            <div class="d-flex w-50 ms-auto me-3">
+                <input class="form-control me-2 rounded-pill" type="search" placeholder="Search items, services...">
+                <button class="btn btn-primary rounded-pill px-4" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner -->
+    <div class="bg-primary text-white text-center py-5">
+        <div class="container">
+            <h1 class="fw-bold">Explore Top Solutions & Products</h1>
+            <p class="lead">Find the best services tailored for your exact needs.</p>
+        </div>
     </div>
-    <div class="panel solution reveal">
-      <h3><span class="icon">✅</span> Our Solution</h3>
-      <p id="solutionText">Describe how your project solves it.</p>
+
+    <!-- Main Grid -->
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- Item Card 1 -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" class="card-img-top rounded-top-3" alt="Product">
+                    <div class="card-body">
+                        <span class="badge bg-primary-subtle text-primary mb-2">Category A</span>
+                        <h5 class="card-title fw-bold">Featured Item Title</h5>
+                        <p class="card-text text-muted small">Quick descriptive snippet about this particular product or listed service.</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="fw-bold text-success fs-5">$49.99</span>
+                            <button class="btn btn-outline-primary btn-sm rounded-pill px-3">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Item Card 2 -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" class="card-img-top rounded-top-3" alt="Product">
+                    <div class="card-body">
+                        <span class="badge bg-success-subtle text-success mb-2">Category B</span>
+                        <h5 class="card-title fw-bold">Featured Item Title</h5>
+                        <p class="card-text text-muted small">Quick descriptive snippet about this particular product or listed service.</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="fw-bold text-success fs-5">$29.99</span>
+                            <button class="btn btn-outline-primary btn-sm rounded-pill px-3">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Item Card 3 -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" class="card-img-top rounded-top-3" alt="Product">
+                    <div class="card-body">
+                        <span class="badge bg-warning-subtle text-warning mb-2">Category C</span>
+                        <h5 class="card-title fw-bold">Featured Item Title</h5>
+                        <p class="card-text text-muted small">Quick descriptive snippet about this particular product or listed service.</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="fw-bold text-success fs-5">$89.99</span>
+                            <button class="btn btn-outline-primary btn-sm rounded-pill px-3">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</section>
 
-<section id="features">
-  <div class="section-tag">Capabilities</div>
-  <h2 class="section-title reveal">Key Features</h2>
-  <p class="section-desc reveal">A quick look at what the system can do.</p>
-  <div class="feature-grid" id="featureGrid"></div>
-</section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
 
-<section id="architecture">
-  <div class="section-tag">Under the Hood</div>
-  <h2 class="section-title reveal">How It Works</h2>
-  <p class="section-desc reveal">A simplified flow of the system pipeline.</p>
-  <div class="flow" id="flowRow"></div>
-</section>
 
-<section id="stack">
-  <div class="section-tag">Built With</div>
-  <h2 class="section-title reveal">Tech Stack</h2>
-  <div class="stack-row" id="stackRow"></div>
-</section>
+Template 2: Dashboard & Admin / Management Panel Layout
+Best For: Task Trackers, Analytics Web Apps, Admin Controls, Booking Monitors.
 
-<section id="team">
-  <div class="section-tag">The Squad</div>
-  <h2 class="section-title reveal">Team</h2>
-  <div class="team-grid" id="teamGrid"></div>
-</section>
+Key Features: Sidebar navigation, top metrics cards, data table, status indicators.
 
-<section class="cta-section" id="demo">
-  <h2>Ready to see it in action?</h2>
-  <p id="ctaDesc">Check out the live demo or dive into the code.</p>
-  <div class="hero-actions">
-    <a class="btn btn-primary" href="#" id="demoLink">Launch Demo</a>
-    <a class="btn btn-ghost" href="#" id="repoLink">GitHub Repo</a>
-  </div>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-dark navbar-dark min-vh-100 p-3">
+                <a href="#" class="navbar-brand fw-bold fs-4 text-white d-block mb-4"><i class="fa-solid fa-chart-line me-2"></i>DashBoard</a>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item"><a href="#" class="nav-link active"><i class="fa-solid fa-house me-2"></i>Overview</a></li>
+                    <li><a href="#" class="nav-link text-white"><i class="fa-solid fa-list-check me-2"></i>Tasks</a></li>
+                    <li><a href="#" class="nav-link text-white"><i class="fa-solid fa-users me-2"></i>Users</a></li>
+                    <li><a href="#" class="nav-link text-white"><i class="fa-solid fa-gear me-2"></i>Settings</a></li>
+                </ul>
+            </nav>
 
-<footer id="footerText">Built at Hackathon 2026 · Team Placeholder</footer>
+            <!-- Main Content Area -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 bg-light">
+                <h2 class="fw-bold mb-4">System Analytics & Management</h2>
+                
+                <!-- Metric Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm p-3 border-start border-4 border-primary">
+                            <span class="text-muted small">Total Users</span>
+                            <h3 class="fw-bold mb-0">1,248</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm p-3 border-start border-4 border-success">
+                            <span class="text-muted small">Active Tasks</span>
+                            <h3 class="fw-bold mb-0">86%</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm p-3 border-start border-4 border-warning">
+                            <span class="text-muted small">Pending Requests</span>
+                            <h3 class="fw-bold mb-0">14</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm p-3 border-start border-4 border-danger">
+                            <span class="text-muted small">Alerts</span>
+                            <h3 class="fw-bold mb-0">2</h3>
+                        </div>
+                    </div>
+                </div>
 
-<script>
-/* ============================================================
-   🔧 EDIT EVERYTHING BELOW TO RESKIN FOR A NEW PROBLEM STATEMENT
-   ============================================================ */
-const CONFIG = {
-  pageTitle: "Smart Tourist Safety — SIH 2026",
-  brand: "SafeTrail",
-  badge: "🏆 Built for SIH 2026",
-  heroTitleMain: "Keeping travelers ",
-  heroTitleAccent: "safe, always.",
-  heroDesc: "AI-powered geofencing and blockchain digital IDs that detect risk in real time and respond before it becomes an emergency.",
-  githubUrl: "https://github.com/yourusername/your-repo",
-  demoUrl: "#",
+                <!-- Data Table -->
+                <div class="card border-0 shadow-sm p-3">
+                    <h5 class="fw-bold mb-3">Recent Activity Log</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#1001</td>
+                                    <td>Rahul Sharma</td>
+                                    <td><span class="badge bg-success">Completed</span></td>
+                                    <td>25 Aug 2026</td>
+                                    <td><button class="btn btn-sm btn-light border"><i class="fa-solid fa-eye"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td>#1002</td>
+                                    <td>Priya Verma</td>
+                                    <td><span class="badge bg-warning text-dark">In Progress</span></td>
+                                    <td>25 Aug 2026</td>
+                                    <td><button class="btn btn-sm btn-light border"><i class="fa-solid fa-eye"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
 
-  stats: [
-    { value: "98%", label: "Detection Accuracy" },
-    { value: "<2s", label: "Alert Response" },
-    { value: "100%", label: "On-chain ID Verified" }
-  ],
 
-  problem: "Tourists in remote or high-risk zones often lack real-time safety monitoring. Manual reporting is slow, identity verification is fragmented, and emergency response is delayed.",
-  solution: "A unified platform combining AI-based anomaly detection, live geofencing of risk zones, and blockchain-backed digital IDs — enabling instant incident detection, verified identity, and rapid response coordination.",
+Template 3: Clean Modern SaaS & Web Application Portal
+Best For: AI tools, Web Apps, Portals, SaaS Platforms, Tech Prototypes.
 
-  features: [
-    { icon: "🧠", title: "AI Risk Scoring", desc: "Real-time anomaly detection flags unusual movement or distress patterns." },
-    { icon: "📍", title: "Smart Geofencing", desc: "Dynamic red-zone mapping alerts users before they enter danger areas." },
-    { icon: "🔗", title: "Blockchain Digital ID", desc: "Tamper-proof, verifiable tourist identity for fast authority coordination." },
-    { icon: "🚨", title: "One-Tap SOS", desc: "Instant multi-channel alert to authorities and emergency contacts." },
-    { icon: "🗺️", title: "Live Dashboard", desc: "Authorities get a real-time map view of active tourists and alerts." },
-    { icon: "📊", title: "Incident Analytics", desc: "Historical data to identify recurring risk patterns and improve safety." }
-  ],
+Key Features: Dark theme accents, step-by-step workflow layout, clean minimalist cards.
 
-  flow: ["Tourist Onboards", "Digital ID Issued", "Live Location + AI Monitoring", "Risk Detected", "Instant Alert to Authority"],
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS / Tech Portal Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-dark text-white">
 
-  stack: ["React", "Tailwind CSS", "Node.js", "Express", "MongoDB", "Solidity", "TensorFlow", "Mapbox", "Vercel"],
+    <nav class="navbar navbar-expand-lg navbar-dark border-bottom border-secondary py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4 text-warning" href="#"><i class="fa-solid fa-brain me-2"></i>NextGen AI</a>
+            <button class="btn btn-warning fw-bold rounded-pill px-4">Launch App</button>
+        </div>
+    </nav>
 
-  team: [
-    { name: "Komal Pandey", role: "AI/ML + Frontend" },
-    { name: "Teammate 2", role: "Backend" },
-    { name: "Teammate 3", role: "Blockchain" },
-    { name: "Teammate 4", role: "Cloud/DevOps" }
-  ],
+    <!-- Hero -->
+    <section class="text-center py-5 container">
+        <span class="badge bg-secondary mb-3 px-3 py-2 rounded-pill">V1.0 Beta Released</span>
+        <h1 class="display-3 fw-bold">Automate Your Workflow Instantly</h1>
+        <p class="lead text-secondary col-md-8 mx-auto">Leverage intelligent automation to simplify everyday complex tasks with zero friction.</p>
+        <div class="mt-4">
+            <button class="btn btn-warning btn-lg me-2 fw-bold px-4">Try Live Demo</button>
+            <button class="btn btn-outline-light btn-lg px-4">Documentation</button>
+        </div>
+    </section>
 
-  ctaDesc: "Check out the live demo or dive into the code.",
-  footerText: "Built at SIH 2026 · Team SafeTrail"
-};
-/* ============================================================
-   NO NEED TO EDIT BELOW — rendering logic
-   ============================================================ */
+    <!-- Workflow Steps -->
+    <section class="py-5 bg-secondary bg-opacity-10">
+        <div class="container text-center">
+            <h3 class="fw-bold mb-5">How It Works in 3 Simple Steps</h3>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="p-4 border border-secondary rounded-4 bg-dark">
+                        <div class="fs-1 text-warning mb-3">1</div>
+                        <h5 class="fw-bold">Input Data</h5>
+                        <p class="text-secondary small">Upload your dataset or enter parameters directly into our system.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border border-secondary rounded-4 bg-dark">
+                        <div class="fs-1 text-warning mb-3">2</div>
+                        <h5 class="fw-bold">Process & Analyze</h5>
+                        <p class="text-secondary small">Our algorithm processes the data in real-time with high efficiency.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border border-secondary rounded-4 bg-dark">
+                        <div class="fs-1 text-warning mb-3">3</div>
+                        <h5 class="fw-bold">Get Results</h5>
+                        <p class="text-secondary small">Export actionable insights and working outputs immediately.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-document.getElementById('pageTitle').textContent = CONFIG.pageTitle;
-document.getElementById('navBrand').textContent = CONFIG.brand;
-document.getElementById('heroBadge').textContent = CONFIG.badge;
-document.getElementById('heroTitle').innerHTML = `${CONFIG.heroTitleMain}<span class="accent">${CONFIG.heroTitleAccent}</span>`;
-document.getElementById('heroDesc').textContent = CONFIG.heroDesc;
-document.getElementById('githubLink').href = CONFIG.githubUrl;
-document.getElementById('repoLink').href = CONFIG.githubUrl;
-document.getElementById('demoLink').href = CONFIG.demoUrl;
-document.getElementById('problemText').textContent = CONFIG.problem;
-document.getElementById('solutionText').textContent = CONFIG.solution;
-document.getElementById('ctaDesc').textContent = CONFIG.ctaDesc;
-document.getElementById('footerText').textContent = CONFIG.footerText;
+</body>
+</html>
 
-document.getElementById('statsRow').innerHTML = CONFIG.stats.map(s => `
-  <div class="stat"><h3>${s.value}</h3><p>${s.label}</p></div>
-`).join('');
+Template 4: Social / Community Cause & Event Hub Layout
+Best For: Environmental campaigns, College events, Social causes, NGO/Community portals.
 
-document.getElementById('featureGrid').innerHTML = CONFIG.features.map(f => `
-  <div class="feature-card reveal">
-    <div class="icon">${f.icon}</div>
-    <h4>${f.title}</h4>
-    <p>${f.desc}</p>
-  </div>
-`).join('');
+Key Features: Impact stats banner, photo highlight gallery, volunteer registration form.
 
-document.getElementById('flowRow').innerHTML = CONFIG.flow.map((step, i) => `
-  <div class="flow-step reveal">${step}</div>
-  ${i < CONFIG.flow.length - 1 ? '<div class="flow-arrow">→</div>' : ''}
-`).join('');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event & Campaign Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
 
-document.getElementById('stackRow').innerHTML = CONFIG.stack.map(t => `
-  <div class="stack-pill">${t}</div>
-`).join('');
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg bg-success navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#"><i class="fa-solid fa-leaf me-2"></i>EcoDrive Initiative</a>
+            <a href="#register" class="btn btn-light text-success fw-bold rounded-pill">Join Event</a>
+        </div>
+    </nav>
 
-document.getElementById('teamGrid').innerHTML = CONFIG.team.map(m => `
-  <div class="team-card reveal">
-    <div class="team-avatar">${m.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
-    <h4>${m.name}</h4>
-    <p>${m.role}</p>
-  </div>
-`).join('');
+    <!-- Banner -->
+    <section class="bg-success-subtle py-5">
+        <div class="container text-center py-4">
+            <h1 class="display-4 fw-bold text-success">Together For A Better Tomorrow</h1>
+            <p class="lead text-dark col-md-8 mx-auto">Join our upcoming event or drive. Make a real impact in your campus and community.</p>
+        </div>
+    </section>
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-}, { threshold: 0.15 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-</script>
+    <!-- Impact Stats Grid -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row text-center g-4">
+                <div class="col-md-4">
+                    <div class="p-4 border-0 shadow-sm rounded-4 bg-white">
+                        <i class="fa-solid fa-users fs-1 text-success mb-2"></i>
+                        <h2 class="fw-bold">500+</h2>
+                        <p class="text-muted mb-0">Active Participants</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border-0 shadow-sm rounded-4 bg-white">
+                        <i class="fa-solid fa-location-dot fs-1 text-success mb-2"></i>
+                        <h2 class="fw-bold">12+</h2>
+                        <p class="text-muted mb-0">Locations Covered</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border-0 shadow-sm rounded-4 bg-white">
+                        <i class="fa-solid fa-trophy fs-1 text-success mb-2"></i>
+                        <h2 class="fw-bold">100%</h2>
+                        <p class="text-muted mb-0">Community Driven</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Form -->
+    <section id="register" class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm p-4 rounded-4">
+                        <h3 class="fw-bold text-center mb-3 text-success">Event Registration</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" placeholder="Enter your name">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">College ID / Email</label>
+                                <input type="email" class="form-control" placeholder="student@gehu.ac.in">
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 fw-bold py-2 rounded-pill">Confirm Registration</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 </body>
 </html>
